@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { CelsiusToFahrenheitPage } from '../pageObjects/celsiusToFahrenheitPage.js';
+import { CelsiusToFahrenheitPage } from '../pageObjects/celsiusToFahrenheitPage';
 
 Given('I provide {string} degree Celsius', async function (celsius: string) {
     const celsiusToFahrenheitPage = new CelsiusToFahrenheitPage(page);

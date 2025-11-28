@@ -1,9 +1,9 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { LoginPage } from '../pageObjects/loginPage.js';
-import { UserAccountPage } from '../pageObjects/userAccountPage.js';
-import { EmployeePage } from '../pageObjects/employeePage.js';
-import { SalesPage } from '../pageObjects/salesPage.js';
+import { LoginPage } from '../pageObjects/loginPage';
+import { UserAccountPage } from '../pageObjects/userAccountPage';
+import { EmployeePage } from '../pageObjects/employeePage';
+import { SalesPage } from '../pageObjects/salesPage';
 
 Given('I navigate to login page', async function () {
     const loginPage = new LoginPage(page);
@@ -27,7 +27,7 @@ When('Admin searches for employee {string}', async function (employeeName: strin
     await userAccountPage.navigateToHumanResourcesSection();
 
     const employeePage = new EmployeePage(page);
-    await employeePage.employeePageIsDisplayed();
+    await expect(await employeePage.isEmployeePageDisplayed()).toBeTruthy();
     await employeePage.fillEmployeeNameInput(employeeName);
     await employeePage.clickSearchBtn();
 });
@@ -35,7 +35,7 @@ When('Admin searches for employee {string}', async function (employeeName: strin
 Then('information appears that employee {string} belongs to department {string}',
     async function (expectedEmployeeName: string, expectedDepartmentName: string) {
         const employeePage = new EmployeePage(page);
-        await employeePage.employeeRecordIsDisplayed();
+        await expect(await employeePage.isEmployeeRecordDisplayed()).toBeTruthy();
 
         const actualEmployeeName = await employeePage.grabEmployeeName();
         expect(actualEmployeeName).toEqual(expectedEmployeeName);
@@ -49,12 +49,12 @@ When('Admin looks up total sales amount for month {string} in year {string}', as
     await userAccountPage.navigateToSalesSection();
 
     const salesPage = new SalesPage(page);
-    await salesPage.salesStatisticsPageIsDisplayed();
+    await expect(await salesPage.isSalesStatisticsPageDisplayed()).toBeTruthy();
 
     const actualYearMonthHeader = await salesPage.grabYearMonthHeader();
     expect(actualYearMonthHeader).toEqual(year + ' Month');
 
-    await salesPage.monthCellIsDisplayed(month);
+    await expect(await salesPage.isMonthCellDisplayed(month)).toBeTruthy();
 });
 
 Then('the total {string} sales amount is {string}', async function (month: string, expectedSalesAmount: string) {

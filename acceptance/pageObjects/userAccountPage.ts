@@ -1,23 +1,20 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
+import { SELECTORS, URLS, TEXT_CONTENT } from '../constants';
 
-export class UserAccountPage {
-    readonly page: Page;
+export class UserAccountPage extends BasePage {
     readonly userAccountMainHeader: Locator;
     readonly adminDashboardMainHeader: Locator;
     readonly hrResourcesLink: Locator;
     readonly salesStatisticsLink: Locator;
-    readonly url: string = '?action=useraccount';
+    protected readonly url: string = URLS.USER_ACCOUNT;
 
     constructor(page: Page) {
-        this.page = page;
-        this.userAccountMainHeader = page.locator('h2', {hasText: 'User Account'});
-        this.adminDashboardMainHeader = page.locator('h2', {hasText: 'Admin Dashboard'});
-        this.hrResourcesLink = page.locator('#hr-resources-link');
-        this.salesStatisticsLink = page.locator('#sales-statistics-link');
-    }
-
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
+        super(page);
+        this.userAccountMainHeader = page.locator(SELECTORS.USER_ACCOUNT.USER_ACCOUNT_HEADER, {hasText: TEXT_CONTENT.USER_ACCOUNT.USER_ACCOUNT_HEADER});
+        this.adminDashboardMainHeader = page.locator(SELECTORS.USER_ACCOUNT.ADMIN_DASHBOARD_HEADER, {hasText: TEXT_CONTENT.USER_ACCOUNT.ADMIN_DASHBOARD_HEADER});
+        this.hrResourcesLink = page.locator(SELECTORS.USER_ACCOUNT.HR_RESOURCES_LINK);
+        this.salesStatisticsLink = page.locator(SELECTORS.USER_ACCOUNT.SALES_STATISTICS_LINK);
     }
 
     async getUserAccountMainHeader(): Promise<Locator> {

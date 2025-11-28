@@ -1,18 +1,31 @@
-import { Before, BeforeAll, AfterAll, After, setDefaultTimeout } from "@cucumber/cucumber";
-import { chromium, Browser, BrowserContext, Page } from "playwright";
+import { Before, BeforeAll, AfterAll, After, setDefaultTimeout, Status } from "@cucumber/cucumber";
+import { chromium, firefox, webkit } from "playwright";
+import { config } from "./config";
+import * as fs from 'fs';
 
-// in milliseconds
-setDefaultTimeout(60000);
+// Set timeout from config
+setDefaultTimeout(config.timeout);
+
+// Ensure screenshot directory exists
+if (config.screenshot.onFailure && !fs.existsSync(config.screenshot.path)) {
+    fs.mkdirSync(config.screenshot.path, { recursive: true });
+}
 
 Object.assign(global, {
-    BASE_URL: 'http://localhost:8000/index.php'
+    BASE_URL: config.baseUrl
 });
 
 // launch the browser
 BeforeAll(async function () {
-    global.browser = await chromium.launch({
-        headless: false,
-        slowMo: 100,
+    const browserType = {
+        chromium,
+        firefox,
+        webkit
+    }[config.browser];
+    
+    global.browser = await browserType.launch({
+        headless: config.headless,
+        slowMo: config.slowMo,
     });
 });
 
@@ -23,12 +36,32 @@ AfterAll(async function () {
 
 // Create a new browser context and page per scenario
 Before(async function () {
-    global.context = await global.browser.newContext();
+    const contextOptions: any = {
+        viewport: config.viewport
+    };
+    
+    if (config.video.enabled) {
+        contextOptions.recordVideo = {
+            dir: config.video.path
+        };
+    }
+    
+    global.context = await global.browser.newContext(contextOptions);
     global.page = await global.context.newPage();
 });
 
 // Cleanup after each scenario
-After(async function () {
+After(async function (scenario) {
+    // Take screenshot on failure
+    if (config.screenshot.onFailure && scenario.result?.status === Status.FAILED) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const screenshotName = `failure-${scenario.pickle.name.replace(/\s+/g, '-')}-${timestamp}.png`;
+        const screenshotPath = `${config.screenshot.path}/${screenshotName}`;
+        
+        const screenshot = await global.page.screenshot({ path: screenshotPath, fullPage: true });
+        this.attach(screenshot, 'image/png');
+    }
+    
     await global.page.close();
     await global.context.close();
 });

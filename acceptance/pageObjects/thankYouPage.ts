@@ -1,20 +1,18 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
 
-export class ThankYouPage {
-    readonly page: Page;
+export class ThankYouPage extends BasePage {
     readonly thankYouMessageHeader: Locator;
-    readonly url: string = '?action=thankYou';
+    protected readonly url: string = '?action=thankYou';
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.thankYouMessageHeader = page.locator('h2');
     }
 
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
-    }
-
-    async grabThankYouMessage(): Promise<string | null> {
-        return await this.thankYouMessageHeader.textContent();
+    async grabThankYouMessage(): Promise<string> {
+        const text = await this.thankYouMessageHeader.textContent();
+        if (!text) throw new Error('Thank you message not found');
+        return text;
     }
 }

@@ -1,14 +1,14 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { ProvideYourDetailsPage } from '../pageObjects/provideYourDetailsPage.js';
-import { ThankYouPage } from '../pageObjects/thankYouPage.js';
+import { ProvideYourDetailsPage } from '../pageObjects/provideYourDetailsPage';
+import { ThankYouPage } from '../pageObjects/thankYouPage';
 
 Given('I navigate to Information about yourself page', async function () {
     const provideYourDetailsPage = new ProvideYourDetailsPage(page);
     await provideYourDetailsPage.visit();
 });
 
-When('I provide the following details', async function (datatable) {
+When('I provide the following details', async function (datatable: DataTable) {
     const provideYourDetailsPage = new ProvideYourDetailsPage(page);
 
     const details = datatable.rowsHash();

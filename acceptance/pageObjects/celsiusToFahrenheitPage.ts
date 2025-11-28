@@ -1,21 +1,17 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
 
-export class CelsiusToFahrenheitPage {
-    readonly page: Page;
+export class CelsiusToFahrenheitPage extends BasePage {
     readonly celsiusInput: Locator;
     readonly convertButton: Locator;
     readonly fahrenheitInput: Locator;
-    readonly url: string = '?action=form6';
+    protected readonly url: string = '?action=form6';
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.celsiusInput = page.locator('//input[@name="celsius"]');
         this.convertButton = page.locator('#btnCelsius');
         this.fahrenheitInput = page.locator('//input[@name="fahrenheit"]');
-    }
-
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
     }
 
     async provideCelsius(celsiusDegrees: string): Promise<void> {
@@ -26,7 +22,9 @@ export class CelsiusToFahrenheitPage {
         await this.convertButton.click();
     }
 
-    async readFahrenheitField(): Promise<string | null> {
-        return this.fahrenheitInput.getAttribute('value');
+    async readFahrenheitField(): Promise<string> {
+        const value = await this.fahrenheitInput.getAttribute('value');
+        if (value === null) throw new Error('Fahrenheit field value not found');
+        return value;
     }
 }

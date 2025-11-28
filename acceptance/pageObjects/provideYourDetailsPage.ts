@@ -1,7 +1,7 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
 
-export class ProvideYourDetailsPage {
-    readonly page: Page;
+export class ProvideYourDetailsPage extends BasePage {
     readonly inputFirstname: Locator;
     readonly inputLastname: Locator;
     readonly inputStreet: Locator;
@@ -13,10 +13,10 @@ export class ProvideYourDetailsPage {
     readonly inputHomePhoneNumber: Locator;
     readonly inputEmail: Locator;
     readonly buttonSubmitInfo: Locator;
-    readonly url: string = '?action=form1';
+    protected readonly url: string = '?action=form1';
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.inputFirstname = page.locator('#fname');
         this.inputLastname = page.locator('#lname');
         this.inputStreet = page.locator('#street');
@@ -28,10 +28,6 @@ export class ProvideYourDetailsPage {
         this.inputHomePhoneNumber = page.locator('#home');
         this.inputEmail = page.locator('#email');
         this.buttonSubmitInfo = page.locator('#submit-info');
-    }
-
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
     }
 
     async provideFirstname(firstName: string): Promise<void> {

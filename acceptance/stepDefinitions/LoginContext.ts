@@ -1,9 +1,8 @@
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { LoginPage } from '../pageObjects/loginPage.js';
-import { UserAccountPage } from '../pageObjects/userAccountPage.js';
+import { Given, When, Then, DataTable } from '@cucumber/cucumber';
+import { LoginPage } from '../pageObjects/loginPage';
+import { UserAccountPage } from '../pageObjects/userAccountPage';
 
-Given('I enter following for login', async function (datatable) {
+Given('I enter following for login', async function (datatable: DataTable) {
     const credentials = datatable.hashes();
 
     const loginPage = new LoginPage(page);
@@ -21,7 +20,7 @@ Then('I should be able to access the protected area', async function () {
     await userAccountPage.getAdminDashboardMainHeader();
 });
 
-Given('I enter following values to login', async function (datatable) {
+Given('I enter following values to login', async function (datatable: DataTable) {
     const credentials = datatable.rowsHash();
 
     const loginPage = new LoginPage(page);

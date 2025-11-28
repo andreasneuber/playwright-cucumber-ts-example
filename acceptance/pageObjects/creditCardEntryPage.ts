@@ -1,27 +1,23 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
 
-export class CreditCardEntryPage {
-    readonly page: Page;
+export class CreditCardEntryPage extends BasePage {
     readonly inputCardName: Locator;
     readonly inputCardNum: Locator;
     readonly inputExpiryDate: Locator;
     readonly inputCvv: Locator;
     readonly buttonPayNow: Locator;
     readonly creditCardInfoEntryForm: Locator;
-    readonly url: string = '?action=form3';
+    protected readonly url: string = '?action=form3';
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.inputCardName = page.locator('#cname');
         this.inputCardNum = page.locator('#ccnum');
         this.inputExpiryDate = page.locator('#expdate');
         this.inputCvv = page.locator('#cvv');
         this.buttonPayNow = page.locator('#btnPaynow');
         this.creditCardInfoEntryForm = page.locator('#ccentry');
-    }
-
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
     }
 
     async enterCardInformation(cardname: string, ccnumber: string, expiryDate: string, cvv: string): Promise<void> {

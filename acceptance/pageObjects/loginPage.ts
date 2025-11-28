@@ -1,23 +1,20 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
+import { SELECTORS, URLS } from '../constants';
 
-export class LoginPage {
-    readonly page: Page;
+export class LoginPage extends BasePage {
     readonly inputUsername: Locator;
     readonly inputPassword: Locator;
     readonly buttonLogin: Locator;
     readonly titleHeader: Locator;
-    readonly url: string = '?action=form4';
+    protected readonly url: string = URLS.LOGIN;
 
     constructor(page: Page) {
-        this.page = page;
-        this.inputUsername = page.locator('input[name="user"]');
-        this.inputPassword = page.locator('input[name="pw"]');
-        this.buttonLogin = page.locator('#btnLogin');
-        this.titleHeader = page.locator('h2');
-    }
-
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
+        super(page);
+        this.inputUsername = page.locator(SELECTORS.LOGIN.USERNAME);
+        this.inputPassword = page.locator(SELECTORS.LOGIN.PASSWORD);
+        this.buttonLogin = page.locator(SELECTORS.LOGIN.LOGIN_BUTTON);
+        this.titleHeader = page.locator(SELECTORS.LOGIN.TITLE_HEADER);
     }
 
     async provideUsername(username: string): Promise<void> {
@@ -37,7 +34,11 @@ export class LoginPage {
         await this.buttonLogin.click();
     }
 
-    async getTitleForm(): Promise<string | null> {
-        return await this.titleHeader.textContent();
+    async getTitleForm(): Promise<string> {
+        const text = await this.titleHeader.textContent();
+        if (!text) {
+            throw new Error(`Title form text not found on page: ${this.page.url()}`);
+        }
+        return text;
     }
 }

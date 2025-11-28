@@ -1,7 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { CreditCardEntryPage } from '../pageObjects/creditCardEntryPage.js';
-import { CreditCardResponsePage } from '../pageObjects/creditCardResponsePage.js';
+import { CreditCardEntryPage } from '../pageObjects/creditCardEntryPage';
+import { CreditCardResponsePage } from '../pageObjects/creditCardResponsePage';
 
 Given('User is on card card entry page', async function () {
     const creditCardEntryPage = new CreditCardEntryPage(page);
@@ -17,7 +17,7 @@ When(/^User (.*) enters card number (.*) together with expiry date (.*) and cvv 
 
 Then(/^the page will respond with (.*) and provide as reason (.*)$/, async function (expectedResponse: string, expectedReason: string) {
     const creditCardResponsePage = new CreditCardResponsePage(page);
-    await creditCardResponsePage.isAlertMessageBoxDisplayed();
+    await expect(await creditCardResponsePage.isAlertMessageBoxDisplayed()).toBeTruthy();
 
     const actualResponse = await creditCardResponsePage.grabResponseFromAlertBox();
     await expect(actualResponse).toContain(expectedResponse);

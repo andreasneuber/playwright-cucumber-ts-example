@@ -17,10 +17,16 @@ services:
         network_mode: host
         stdin_open: true
         tty: true
-        image: playwright-cucumber-js-docker:latest
-        command: bash -c "npm run test:normal && npm run report"
+        image: playwright-cucumber-ts-docker:latest
+        command: bash -c "npm run build && npm run test:normal && npm run report"
+        environment:
+            - BASE_URL=${BASE_URL:-http://localhost:8000/index.php}
+            - BROWSER=${BROWSER:-chromium}
+            - HEADLESS=${HEADLESS:-true}
+            - SCREENSHOT_ON_FAILURE=${SCREENSHOT_ON_FAILURE:-true}
         volumes:
-            - .:/app/reports
+            - ./reports:/app/reports
+            - ./cucumber_report.json:/app/cucumber_report.json
         depends_on:
             sample-site:
                 condition: service_healthy

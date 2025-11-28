@@ -1,31 +1,28 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
+import { SELECTORS, URLS, TEXT_CONTENT } from '../constants';
 
-export class EmployeePage {
-    readonly page: Page;
+export class EmployeePage extends BasePage {
     readonly employeePageMainHeader: Locator;
     readonly inputEmployeeName: Locator;
     readonly btnSearch: Locator;
     readonly employeeDetailsRecord: Locator;
     readonly employeeNameCell: Locator;
     readonly departmentNameCell: Locator;
-    readonly url: string = '?action=employee';
+    protected readonly url: string = URLS.EMPLOYEE;
 
     constructor(page: Page) {
-        this.page = page;
-        this.employeePageMainHeader = page.locator('h2', {hasText: 'Human Resources - Find employee'});
-        this.inputEmployeeName = page.locator('#employee-name');
-        this.btnSearch = page.locator('#btnSearch');
-        this.employeeDetailsRecord = page.locator('#employee-details');
-        this.employeeNameCell = page.locator('.employee.name');
-        this.departmentNameCell = page.locator('.employee.department');
+        super(page);
+        this.employeePageMainHeader = page.locator(SELECTORS.EMPLOYEE.PAGE_HEADER, {hasText: TEXT_CONTENT.EMPLOYEE.PAGE_HEADER});
+        this.inputEmployeeName = page.locator(SELECTORS.EMPLOYEE.EMPLOYEE_NAME_INPUT);
+        this.btnSearch = page.locator(SELECTORS.EMPLOYEE.SEARCH_BUTTON);
+        this.employeeDetailsRecord = page.locator(SELECTORS.EMPLOYEE.EMPLOYEE_DETAILS);
+        this.employeeNameCell = page.locator(SELECTORS.EMPLOYEE.EMPLOYEE_NAME_CELL);
+        this.departmentNameCell = page.locator(SELECTORS.EMPLOYEE.DEPARTMENT_NAME_CELL);
     }
 
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
-    }
-
-    async employeePageIsDisplayed(): Promise<void> {
-        await expect(this.employeePageMainHeader).toBeVisible();
+    async isEmployeePageDisplayed(): Promise<boolean> {
+        return await this.employeePageMainHeader.isVisible();
     }
 
     async fillEmployeeNameInput(employeeName: string): Promise<void> {
@@ -36,15 +33,23 @@ export class EmployeePage {
         await this.btnSearch.click();
     }
 
-    async employeeRecordIsDisplayed(): Promise<void> {
-        await expect(this.employeeDetailsRecord).toBeVisible();
+    async isEmployeeRecordDisplayed(): Promise<boolean> {
+        return await this.employeeDetailsRecord.isVisible();
     }
 
-    async grabEmployeeName(): Promise<string | null> {
-        return await this.employeeNameCell.textContent();
+    async grabEmployeeName(): Promise<string> {
+        const text = await this.employeeNameCell.textContent();
+        if (!text) {
+            throw new Error(`Employee name not found on page: ${this.page.url()}`);
+        }
+        return text;
     }
 
-    async grabDepartmentName(): Promise<string | null> {
-        return await this.departmentNameCell.textContent();
+    async grabDepartmentName(): Promise<string> {
+        const text = await this.departmentNameCell.textContent();
+        if (!text) {
+            throw new Error(`Department name not found on page: ${this.page.url()}`);
+        }
+        return text;
     }
 }

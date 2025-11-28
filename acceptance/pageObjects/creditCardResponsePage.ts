@@ -1,32 +1,32 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './basePage';
 
-export class CreditCardResponsePage {
-    readonly page: Page;
+export class CreditCardResponsePage extends BasePage {
     readonly alertMessageBox: Locator;
     readonly alertMessageBoxResponse: Locator;
     readonly alertMessageBoxMoreInfo: Locator;
-    readonly url: string = '?action=responsecc';
+    protected readonly url: string = '?action=responsecc';
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.alertMessageBox = page.locator('.alert');
         this.alertMessageBoxResponse = page.locator('.response');
         this.alertMessageBoxMoreInfo = page.locator('.more-info');
     }
 
-    async visit(): Promise<void> {
-        await this.page.goto(BASE_URL + this.url);
+    async isAlertMessageBoxDisplayed(): Promise<boolean> {
+        return await this.alertMessageBox.isVisible();
     }
 
-    async isAlertMessageBoxDisplayed(): Promise<void> {
-        await expect(this.alertMessageBox).toBeVisible();
+    async grabResponseFromAlertBox(): Promise<string> {
+        const text = await this.alertMessageBoxResponse.textContent();
+        if (!text) throw new Error('Alert response text not found');
+        return text;
     }
 
-    async grabResponseFromAlertBox(): Promise<string | null> {
-        return await this.alertMessageBoxResponse.textContent();
-    }
-
-    async grabMoreInfoFromAlertBox(): Promise<string | null> {
-        return await this.alertMessageBoxMoreInfo.textContent();
+    async grabMoreInfoFromAlertBox(): Promise<string> {
+        const text = await this.alertMessageBoxMoreInfo.textContent();
+        if (!text) throw new Error('Alert more info text not found');
+        return text;
     }
 }
