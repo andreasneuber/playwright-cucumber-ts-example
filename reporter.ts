@@ -1,10 +1,10 @@
-const reporter = require('cucumber-html-reporter')
+import reporter from 'cucumber-html-reporter';
 
 reporter.generate({
     theme: 'bootstrap',
     jsonFile: 'cucumber_report.json',
     output: 'reports/cucumber_report.html',
-    reportSuiteAsScenario: true,
+    reportSuiteAsScenarios: true,
     scenarioTimestamp: true,
     launchReport: false,
     metadata: {

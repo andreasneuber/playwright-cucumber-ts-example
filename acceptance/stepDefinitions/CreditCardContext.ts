@@ -1,23 +1,25 @@
-const {Given, When, Then} = require('@cucumber/cucumber')
-const { expect } = require("@playwright/test");
-const { CreditCardEntryPage } = require('../pageObjects/creditCardEntryPage.js');
-const { CreditCardResponsePage } = require('../pageObjects/creditCardResponsePage.js');
+import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { CreditCardEntryPage } from '../pageObjects/creditCardEntryPage.js';
+import { CreditCardResponsePage } from '../pageObjects/creditCardResponsePage.js';
 
 Given('User is on card card entry page', async function () {
     const creditCardEntryPage = new CreditCardEntryPage(page);
     await creditCardEntryPage.visit();
 });
+
 When(/^User (.*) enters card number (.*) together with expiry date (.*) and cvv (.*)$/,
-    async function (name, ccnumber, expirydate, cvv) {
+    async function (name: string, ccnumber: string, expirydate: string, cvv: string) {
         const creditCardEntryPage = new CreditCardEntryPage(page);
         await creditCardEntryPage.enterCardInformation(name, ccnumber, expirydate, cvv);
         await creditCardEntryPage.submitPayment();
     });
-Then(/^the page will respond with (.*) and provide as reason (.*)$/, async function (expectedResponse, expectedReason) {
+
+Then(/^the page will respond with (.*) and provide as reason (.*)$/, async function (expectedResponse: string, expectedReason: string) {
     const creditCardResponsePage = new CreditCardResponsePage(page);
     await creditCardResponsePage.isAlertMessageBoxDisplayed();
 
-    const actualResponse = await creditCardResponsePage.grabResponseFromAlertBox()
+    const actualResponse = await creditCardResponsePage.grabResponseFromAlertBox();
     await expect(actualResponse).toContain(expectedResponse);
 
     const actualReason = await creditCardResponsePage.grabMoreInfoFromAlertBox();

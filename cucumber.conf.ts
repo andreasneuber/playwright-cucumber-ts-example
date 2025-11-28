@@ -1,12 +1,8 @@
-const {Before, BeforeAll, AfterAll, After, setDefaultTimeout} = require("@cucumber/cucumber");
-// you can choose other browsers like webkit or firefox according to your requirement
-const {chromium} = require("playwright");
-//const {firefox} = require("playwright");
-//const {webkit} = require("playwright");
+import { Before, BeforeAll, AfterAll, After, setDefaultTimeout } from "@cucumber/cucumber";
+import { chromium, Browser, BrowserContext, Page } from "playwright";
 
 // in milliseconds
 setDefaultTimeout(60000);
-
 
 Object.assign(global, {
     BASE_URL: 'http://localhost:8000/index.php'
@@ -15,7 +11,7 @@ Object.assign(global, {
 // launch the browser
 BeforeAll(async function () {
     global.browser = await chromium.launch({
-        headless: true,
+        headless: false,
         slowMo: 100,
     });
 });

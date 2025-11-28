@@ -1,10 +1,10 @@
-const {Given, When, Then} = require('@cucumber/cucumber')
-const {expect} = require("@playwright/test");
+import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 
-let orangeFriend;
-let greenFriend;
-let brownFriend;
-
+let orangeFriend: Page;
+let greenFriend: Page;
+let brownFriend: Page;
 
 Given('different people went to different sites', async function () {
     orangeFriend = page;
@@ -16,8 +16,8 @@ Given('different people went to different sites', async function () {
     brownFriend = await context.newPage();
     await brownFriend.goto('http://localhost:8000/index.php?action=brownPage');
 });
-When('they realize that they forgot what they actually wanted to do there', async function () {
 
+When('they realize that they forgot what they actually wanted to do there', async function () {
     console.log("\t Wait a minute...");
 
     await brownFriend.reload();
@@ -29,6 +29,7 @@ When('they realize that they forgot what they actually wanted to do there', asyn
 
     console.log("\t We forgot that we are so forgetful.");
 });
+
 Then('they leave the sites again', function () {
     brownFriend.close();
     greenFriend.close();

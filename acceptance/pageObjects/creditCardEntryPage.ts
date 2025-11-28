@@ -1,13 +1,16 @@
-const {expect} = require('@playwright/test');
+import { expect, Page, Locator } from '@playwright/test';
 
-exports.CreditCardEntryPage = class CreditCardEntryPage {
+export class CreditCardEntryPage {
+    readonly page: Page;
+    readonly inputCardName: Locator;
+    readonly inputCardNum: Locator;
+    readonly inputExpiryDate: Locator;
+    readonly inputCvv: Locator;
+    readonly buttonPayNow: Locator;
+    readonly creditCardInfoEntryForm: Locator;
+    readonly url: string = '?action=form3';
 
-    url = '?action=form3';
-
-    /**
-     * @param {import('@playwright/test').Page} page
-     */
-    constructor(page) {
+    constructor(page: Page) {
         this.page = page;
         this.inputCardName = page.locator('#cname');
         this.inputCardNum = page.locator('#ccnum');
@@ -17,22 +20,22 @@ exports.CreditCardEntryPage = class CreditCardEntryPage {
         this.creditCardInfoEntryForm = page.locator('#ccentry');
     }
 
-    async visit() {
+    async visit(): Promise<void> {
         await this.page.goto(BASE_URL + this.url);
     }
 
-    async enterCardInformation(cardname, ccnumber, expiryDate, cvv) {
+    async enterCardInformation(cardname: string, ccnumber: string, expiryDate: string, cvv: string): Promise<void> {
         await this.inputCardName.fill(cardname);
         await this.inputCardNum.fill(ccnumber);
         await this.inputExpiryDate.fill(expiryDate);
         await this.inputCvv.fill(cvv);
     }
 
-    async submitPayment() {
+    async submitPayment(): Promise<void> {
         await this.buttonPayNow.click();
     }
 
-    async getCreditCardInfoEntryForm() {
+    async getCreditCardInfoEntryForm(): Promise<Locator> {
         return this.creditCardInfoEntryForm;
     }
 }

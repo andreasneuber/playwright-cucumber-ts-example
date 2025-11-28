@@ -4,3 +4,9 @@
 
 node_modules/
 reports/*
+
+# TypeScript build output
+dist/
+
+# Keep old JS files temporarily
+# Remove these lines after verifying TypeScript migration works

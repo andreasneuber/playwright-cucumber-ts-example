@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test:e2e": "cucumber-js --require cucumber.conf.js --require acceptance/stepDefinitions/**/*.js --format @cucumber/pretty-formatter",
-    "test:normal": "cucumber-js --require cucumber.conf.js --require acceptance/stepDefinitions/**/*.js --format @cucumber/pretty-formatter acceptance/features/*.feature",
-    "test:all": "cucumber-js --require cucumber.conf.js --require acceptance/stepDefinitions/**/*.js -f json:cucumber_report.json --publish-quiet acceptance/features/*.feature",
-    "report": "node reporter.js"
+    "build": "tsc",
+    "test:e2e": "npm run build && cucumber-js --require dist/cucumber.conf.js --require dist/acceptance/stepDefinitions/**/*.js --format @cucumber/pretty-formatter",
+    "test:normal": "npm run build && cucumber-js --require dist/cucumber.conf.js --require dist/acceptance/stepDefinitions/**/*.js --format @cucumber/pretty-formatter acceptance/features/*.feature",
+    "test:all": "npm run build && cucumber-js --require dist/cucumber.conf.js --require dist/acceptance/stepDefinitions/**/*.js -f json:cucumber_report.json --publish-quiet acceptance/features/*.feature",
+    "report": "npm run build && node dist/reporter.js"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",
     "@cucumber/pretty-formatter": "^2.4.1",
-    "cucumber-html-reporter": "^7.2.0",
     "@playwright/test": "^1.56.1",
-    "playwright": "^1.56.1"
+    "@types/node": "^22.10.0",
+    "cucumber-html-reporter": "^7.2.0",
+    "playwright": "^1.56.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   },
   "overrides": {
     "semver": "^7.5.3"

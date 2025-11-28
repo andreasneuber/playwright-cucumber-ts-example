@@ -1,12 +1,13 @@
-const {Given, When, Then} = require('@cucumber/cucumber')
-const {expect} = require("@playwright/test");
-const {ProvideYourDetailsPage} = require("../pageObjects/provideYourDetailsPage");
-const {ThankYouPage} = require("../pageObjects/thankYouPage");
+import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { ProvideYourDetailsPage } from '../pageObjects/provideYourDetailsPage.js';
+import { ThankYouPage } from '../pageObjects/thankYouPage.js';
 
 Given('I navigate to Information about yourself page', async function () {
     const provideYourDetailsPage = new ProvideYourDetailsPage(page);
     await provideYourDetailsPage.visit();
 });
+
 When('I provide the following details', async function (datatable) {
     const provideYourDetailsPage = new ProvideYourDetailsPage(page);
 
@@ -24,7 +25,8 @@ When('I provide the following details', async function (datatable) {
 
     await provideYourDetailsPage.clickSubmitYourInformation();
 });
-Then(/^I will see message "([^"]*)"$/, async function (expectedMessage) {
+
+Then(/^I will see message "([^"]*)"$/, async function (expectedMessage: string) {
     const thankYouPage = new ThankYouPage(page);
     const actualMessage = await thankYouPage.grabThankYouMessage();
     expect(actualMessage).toBe(expectedMessage);
